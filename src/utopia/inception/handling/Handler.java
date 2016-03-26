@@ -38,8 +38,8 @@ public abstract class Handler<T extends Handled> implements Handled
 	
 	/**
 	 * Creates a new Handler. Remember to add the handler to the handlerRelay(s)
-	 * @see HandlerRelay#addHandler(Handler)
-	 * @see HandlerRelay#add(Handled)
+	 * @see HandlerRelay#addHandler(Handler...)
+	 * @see HandlerRelay#add(Handled...)
 	 */
 	public Handler()
 	{

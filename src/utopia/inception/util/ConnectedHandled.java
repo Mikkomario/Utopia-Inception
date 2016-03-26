@@ -8,7 +8,6 @@ import utopia.inception.state.StateOperator;
 
 /**
  * A ConnectedHandled shares its states with another object.
- * 
  * @author Mikko Hilpinen
  * @param <T> The type of object this one is connected to
  * @since 2.12.2014
@@ -28,7 +27,7 @@ public class ConnectedHandled<T extends Handled> implements Handled
 	 * Creates a new object. The object will be dependent from the given master object. 
 	 * Remember to add the object to a handlerRelay afterwards.
 	 * @param master The object this object depends from.
-	 * @see HandlerRelay#add(Handled)
+	 * @see HandlerRelay#add(Handled...)
 	 */
 	public ConnectedHandled(T master)
 	{

@@ -24,7 +24,7 @@ public class SimpleHandled implements Handled
 	
 	/**
 	 * Creates a new object. Remember to add the object to a handler relay afterwards
-	 * @see HandlerRelay#add(Handled)
+	 * @see HandlerRelay#add(Handled...)
 	 */
 	public SimpleHandled()
 	{

@@ -14,7 +14,7 @@ public class HandlerRelay
 {
 	// ATTRIBUTES	---------------------------------------------
 	
-	private Map<HandlerType, Handler<? extends Handled>> handlers;
+	private Map<HandlerType, Handler<?>> handlers;
 	
 	
 	// CONSTRUCTOR	---------------------------------------------
@@ -48,8 +48,7 @@ public class HandlerRelay
 	 * @param killPrevious If there is already a handler of that type in the relay, will it 
 	 * be killed in the process
 	 */
-	public void addHandler(Handler<? extends Handled> h, 
-			boolean killPrevious)
+	public void addHandler(Handler<?> h, boolean killPrevious)
 	{
 		HandlerType type = h.getHandlerType();
 		
@@ -71,7 +70,7 @@ public class HandlerRelay
 	 * transferred and it will be killed.
 	 * @param newHandler The handler that will be added to the relay
 	 */
-	public void replaceHandler(Handler<? extends Handled> newHandler)
+	public void replaceHandler(Handler<?> newHandler)
 	{
 		addHandler(newHandler, true);
 	}
@@ -80,11 +79,14 @@ public class HandlerRelay
 	 * Adds the given handler to the relay. This method expects that there is no handler 
 	 * of the same type in this relay already (in which case the old handler is removed from 
 	 * the relay).
-	 * @param h The handler that will be added to the relay.
+	 * @param handlers The handlers that are added to the relay
 	 */
-	public void addHandler(Handler<? extends Handled> h)
+	public void addHandler(Handler<?>... handlers)
 	{
-		addHandler(h, false);
+		for (Handler<?> h : handlers)
+		{
+			addHandler(h, false);
+		}
 	}
 	
 	/**
@@ -99,19 +101,22 @@ public class HandlerRelay
 	/**
 	 * Adds a handled to all handlers in the relay that happen to support it. If none of the 
 	 * handlers support this handled, no change is made.
-	 * @param h The handled that may be added to some of the handlers.
-	 * @return Was the handled added to any handler
+	 * @param handleds The handleds that may be added to some of the handlers.
+	 * @return Was any handled added to any handler
 	 */
-	public boolean add(Handled h)
+	public boolean add(Handled... handleds)
 	{
 		boolean wasAdded = false;
 		
-		for (HandlerType type : this.handlers.keySet())
+		for (Handled h : handleds)
 		{
-			if (type.getSupportedHandledClass().isInstance(h))
+			for (HandlerType type : this.handlers.keySet())
 			{
-				this.handlers.get(type).volatileAdd(h);
-				wasAdded = true;
+				if (type.getSupportedHandledClass().isInstance(h))
+				{
+					this.handlers.get(type).volatileAdd(h);
+					wasAdded = true;
+				}
 			}
 		}
 		
@@ -137,7 +142,7 @@ public class HandlerRelay
 	 * @return a handler with the given type or null if the relay doesn't contain a handler 
 	 * of the given type.
 	 */
-	public Handler<? extends Handled> getHandler(HandlerType type)
+	public Handler<?> getHandler(HandlerType type)
 	{
 		return this.handlers.get(type);
 	}
