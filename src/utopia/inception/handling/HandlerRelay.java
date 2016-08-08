@@ -14,19 +14,10 @@ public class HandlerRelay
 {
 	// ATTRIBUTES	---------------------------------------------
 	
-	private Map<HandlerType, Handler<?>> handlers;
+	private Map<HandlerType, Handler<?>> handlers = new HashMap<>();
 	
 	
 	// CONSTRUCTOR	---------------------------------------------
-	
-	/**
-	 * Creates a new empty handlerRelay
-	 */
-	public HandlerRelay()
-	{
-		// Initializes attributes
-		this.handlers = new HashMap<>();
-	}
 	
 	/**
 	 * Creates a new handlerRelay that is a copy of the given handlerRelay. The new relay will 
@@ -35,8 +26,16 @@ public class HandlerRelay
 	 */
 	public HandlerRelay(HandlerRelay other)
 	{
-		this.handlers = new HashMap<>();
 		this.handlers.putAll(other.handlers);
+	}
+	
+	/**
+	 * Creates a new handler relay
+	 * @param handlers The handlers set to the relay
+	 */
+	public HandlerRelay(Handler<?>... handlers)
+	{
+		addHandler(handlers);
 	}
 	
 	

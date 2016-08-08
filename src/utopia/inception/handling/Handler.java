@@ -27,11 +27,11 @@ public abstract class Handler<T extends Handled> implements Handled
 	private static final int REMOVE = 2;
 	private static final int CLEAR = 3;
 	
-	private Map<HandlingOperation, List<T>> operationLists;
-	private StateOperator isDeadOperator;
+	private Map<HandlingOperation, List<T>> operationLists = new HashMap<>();
+	private StateOperator isDeadOperator = null;
 	private HandlingStateOperatorRelay handlingOperators;
 	
-	private Map<HandlingOperation, ReentrantLock> locks;
+	private Map<HandlingOperation, ReentrantLock> locks = new HashMap<>();
 	
 	
 	// CONSTRUCTOR	-----------------------------------------------------
@@ -108,7 +108,6 @@ public abstract class Handler<T extends Handled> implements Handled
 	
 	/**
 	 * Takes Handleds from another handler and moves them to this handler instead.
-	 * 
 	 * @param other The handler from which the Handleds are moved from. 
 	 * Must be of the same HandlerType with this handler.
 	 */
@@ -129,6 +128,15 @@ public abstract class Handler<T extends Handled> implements Handled
 		}
 		
 		handledsToBeTransferred.clear();
+	}
+	
+	/**
+	 * Enables or disables the handler temporarily
+	 * @param isActive Should the handler be active (handling the handled objects)
+	 */
+	public void setActive(boolean isActive)
+	{
+		getHandlingOperator().setState(isActive);
 	}
 	
 	/**
@@ -398,8 +406,6 @@ public abstract class Handler<T extends Handled> implements Handled
 	
 	private void initialize()
 	{
-		this.locks = new HashMap<>();
-		this.operationLists = new HashMap<>();
 		for (HandlingOperation operation : HandlingOperation.values())
 		{
 			if (operation == HandlingOperation.HANDLE)
@@ -410,10 +416,16 @@ public abstract class Handler<T extends Handled> implements Handled
 			this.locks.put(operation, new ReentrantLock());
 		}
 		
-		this.isDeadOperator = null;
+		// The basic handling state is the only one that can be altered
+		this.handlingOperators = new HandlingStateOperatorRelay(new StateOperator(true, false));
+		this.handlingOperators.setShouldBeHandledOperator(getHandlerType(), 
+				new StateOperator(true, true));
+		
+		/* Previously handling state affected handled objects. Not each handler has individual state.
 		this.handlingOperators = new HandlingStateOperatorRelay(new StateOperator(true, false));
 		getHandlingOperators().setShouldBeHandledOperator(getHandlerType(), 
 				new ForAnyHandledShouldBeHandledOperator());
+				*/
 	}
 	
 	
@@ -621,6 +633,7 @@ public abstract class Handler<T extends Handled> implements Handled
 		}
 	}
 	
+	/*
 	private class ForAnyHandledShouldBeHandledOperator extends ForAnyHandledsOperator
 	{
 		// CONSTRUCTOR	------------------
@@ -639,6 +652,7 @@ public abstract class Handler<T extends Handled> implements Handled
 			return h.getHandlingOperators().getShouldBeHandledOperator(getHandlerType());
 		}
 	}
+	*/
 	
 	// Handleds are killed on death, but own state isn't dependent on handleds
 	private class HandlerDeathOperator extends IterativeStateOperator
