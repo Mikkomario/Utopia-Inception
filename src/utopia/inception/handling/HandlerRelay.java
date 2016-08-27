@@ -1,6 +1,8 @@
 package utopia.inception.handling;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -156,5 +158,26 @@ public class HandlerRelay
 		Handler<? extends Handled> handler = getHandler(handlerType);
 		if (handler != null)
 			handler.getHandlingOperator().setState(newState);
+	}
+	
+	/**
+	 * @return The handlers currently contained within this relay. The list is a copy and 
+	 * changes made to it won't affect this relay
+	 */
+	public List<Handler<?>> getHandlers()
+	{
+		return new ArrayList<>(this.handlers.values());
+	}
+	
+	/**
+	 * Changes the handling state of each of the handlers in this relay
+	 * @param isEnabled Whether the handlers should be enabled (true) or disabled (false)
+	 */
+	public void setHandlingStates(boolean isEnabled)
+	{
+		for (Handler<?> handler : getHandlers())
+		{
+			handler.getHandlingOperator().setState(isEnabled);
+		}
 	}
 }
