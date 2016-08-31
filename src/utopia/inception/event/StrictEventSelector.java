@@ -3,21 +3,22 @@ package utopia.inception.event;
 import java.util.ArrayList;
 import java.util.List;
 
+import utopia.inception.event.Event.Feature;
+
 /**
  * StrictEventSelectors select only certain events based on their features. 
- * Selectors can be used for picking the events that interest the user.
- * 
+ * Selectors can be used for picking the events that interest the user. Initially the selector 
+ * accepts all the events. The required features should be added separately.
  * @author Mikko Hilpinen
  * @param <T> The type of event this selector selects
- * @param <FeatureType> The type of the features selected by this selector
  * @since 17.11.2014
  */
-public class StrictEventSelector<T extends Event, FeatureType extends Event.Feature> 
+public class StrictEventSelector<T extends Event> 
 		implements EventSelector<T>
 {
 	// ATTRIBUTES	-------------------------------------
 	
-	private final List<FeatureType> requiredFeatures, unnacceptableFeatures;
+	private final List<Feature> requiredFeatures, unnacceptableFeatures;
 	
 	
 	// CONSTRUCTOR	-------------------------------------
@@ -29,8 +30,8 @@ public class StrictEventSelector<T extends Event, FeatureType extends Event.Feat
 	public StrictEventSelector()
 	{
 		// Initializes attributes
-		this.requiredFeatures = new ArrayList<FeatureType>();
-		this.unnacceptableFeatures = new ArrayList<FeatureType>();
+		this.requiredFeatures = new ArrayList<Feature>();
+		this.unnacceptableFeatures = new ArrayList<Feature>();
 	}
 
 	
@@ -39,10 +40,9 @@ public class StrictEventSelector<T extends Event, FeatureType extends Event.Feat
 	/**
 	 * Adds a new feature to the features required for selection. Watch out for 
 	 * exclusive features
-	 * 
 	 * @param feature The feature the event must have in order to be selected
 	 */
-	public void addRequiredFeature(FeatureType feature)
+	public void addRequiredFeature(Feature feature)
 	{
 		if (feature != null && !this.requiredFeatures.contains(feature) && 
 				!this.unnacceptableFeatures.contains(feature))
@@ -53,7 +53,7 @@ public class StrictEventSelector<T extends Event, FeatureType extends Event.Feat
 	 * Adds a new feature to the features that are not acceptable for selection.
 	 * @param feature The feature which makes an event unacceptable.
 	 */
-	public void addUnacceptableFeature(FeatureType feature)
+	public void addUnacceptableFeature(Feature feature)
 	{
 		if (feature != null && !this.unnacceptableFeatures.contains(feature) && 
 				!this.requiredFeatures.contains(feature))
@@ -64,15 +64,15 @@ public class StrictEventSelector<T extends Event, FeatureType extends Event.Feat
 	public boolean selects(T event)
 	{
 		// Checks if the event has all the required features
-		List<Event.Feature> features = event.getFeatures();
+		List<Feature> features = event.getFeatures();
 		
-		for (FeatureType requirement : this.requiredFeatures)
+		for (Feature requirement : this.requiredFeatures)
 		{
 			if (!features.contains(requirement))
 				return false;
 		}
 		
-		for (FeatureType unacceptable : this.unnacceptableFeatures)
+		for (Feature unacceptable : this.unnacceptableFeatures)
 		{
 			if (features.contains(unacceptable))
 				return false;
@@ -87,8 +87,8 @@ public class StrictEventSelector<T extends Event, FeatureType extends Event.Feat
 	/**
 	 * @return A selector that accepts all mouse events
 	 */
-	public static StrictEventSelector<Event, Event.Feature> createAllAcceptingSelector()
+	public static StrictEventSelector<Event> createAllAcceptingSelector()
 	{
-		return new StrictEventSelector<Event, Event.Feature>();
+		return new StrictEventSelector<Event>();
 	}
 }
