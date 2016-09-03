@@ -10,11 +10,9 @@ import utopia.inception.event.Event.Feature;
  * Selectors can be used for picking the events that interest the user. Initially the selector 
  * accepts all the events. The required features should be added separately.
  * @author Mikko Hilpinen
- * @param <T> The type of event this selector selects
  * @since 17.11.2014
  */
-public class StrictEventSelector<T extends Event> 
-		implements EventSelector<T>
+public class StrictEventSelector implements EventSelector
 {
 	// ATTRIBUTES	-------------------------------------
 	
@@ -61,7 +59,7 @@ public class StrictEventSelector<T extends Event>
 	}
 	
 	@Override
-	public boolean selects(T event)
+	public boolean selects(Event event)
 	{
 		// Checks if the event has all the required features
 		List<Feature> features = event.getFeatures();
@@ -87,8 +85,8 @@ public class StrictEventSelector<T extends Event>
 	/**
 	 * @return A selector that accepts all mouse events
 	 */
-	public static StrictEventSelector<Event> createAllAcceptingSelector()
+	public static StrictEventSelector createAllAcceptingSelector()
 	{
-		return new StrictEventSelector<Event>();
+		return new StrictEventSelector();
 	}
 }

@@ -8,14 +8,13 @@ import java.util.List;
  * collections (selectors).
  * 
  * @author Mikko Hilpinen
- * @param <T> The type of event selected
  * @since 18.11.2014
  */
-public class MultiEventSelector<T extends Event> implements EventSelector<T>
+public class MultiEventSelector implements EventSelector
 {
 	// ATTRIBUTES	-------------------------------------------
 	
-	private List<EventSelector<T>> selectors;
+	private List<EventSelector> selectors;
 	
 	
 	// CONSTRUCTOR	------------------------------------
@@ -27,16 +26,16 @@ public class MultiEventSelector<T extends Event> implements EventSelector<T>
 	public MultiEventSelector()
 	{
 		// Initializes attributes
-		this.selectors = new ArrayList<EventSelector<T>>();
+		this.selectors = new ArrayList<EventSelector>();
 	}
 	
 	
 	// IMPLEMENTED METHODS	-----------------------------
 
 	@Override
-	public boolean selects(T event)
+	public boolean selects(Event event)
 	{
-		for (EventSelector<T> selector : this.selectors)
+		for (EventSelector selector : this.selectors)
 		{
 			if (selector.selects(event))
 				return true;
@@ -52,7 +51,7 @@ public class MultiEventSelector<T extends Event> implements EventSelector<T>
 	 * Adds a new option to the accepted 
 	 * @param selector The selector that will work as an option for selection
 	 */
-	public void addOption(EventSelector<T> selector)
+	public void addOption(EventSelector selector)
 	{
 		if (!this.selectors.contains(selector))
 			this.selectors.add(selector);
